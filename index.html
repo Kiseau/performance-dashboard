@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiseau — Business Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --navy: #4B5FA0;
+  --navy-dark: #2E3B6E;
+  --navy-deep: #1C2444;
+  --cream: #F7F3EC;
+  --sand: #EDE8DF;
+  --sand-mid: #D8D0C0;
+  --seaweed: #4A7C6A;
+  --seaweed-light: #7FB3A0;
+  --coral: #C4705A;
+  --gold: #B8965A;
+  --text-dark: #1C2444;
+  --text-mid: #4A5068;
+  --text-muted: #8A90A8;
+  --white: #FFFFFF;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--cream);color:var(--text-dark);overflow-x:hidden}
+
+/* ─── COVER PAGE ─────────────────────────────────────────────────────── */
+#cover {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  background:var(--navy-deep);
+  overflow:hidden;
+}
+
+/* Organic background shapes */
+.bg-orb {
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  pointer-events:none;
+}
+.bg-orb-1{width:600px;height:600px;background:rgba(74,124,106,0.18);top:-100px;right:-150px}
+.bg-orb-2{width:400px;height:400px;background:rgba(75,95,160,0.25);bottom:-50px;left:-100px}
+.bg-orb-3{width:300px;height:300px;background:rgba(184,150,90,0.1);top:40%;left:30%}
+
+/* Wave divider */
+.wave-divider {
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:120px;
+  overflow:hidden;
+}
+.wave-divider svg{width:100%;height:100%}
+
+.cover-inner {
+  position:relative;
+  z-index:2;
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 60px;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+.cover-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:36px 0 0;
+}
+.cover-logo {
+  font-family:var(--serif);
+  font-size:28px;
+  font-weight:300;
+  letter-spacing:0.22em;
+  color:var(--cream);
+  text-transform:uppercase;
+}
+.cover-badge {
+  font-size:10px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.35);
+  border:1px solid rgba(255,255,255,0.12);
+  padding:6px 16px;
+  border-radius:100px;
+}
+
+.cover-hero {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:60px 0 100px;
+  max-width:700px;
+}
+
+.cover-eyebrow {
+  font-size:11px;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--seaweed-light);
+  margin-bottom:24px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.cover-eyebrow::before {
+  content:'';
+  width:32px;
+  height:1px;
+  background:var(--seaweed-light);
+}
+
+.cover-headline {
+  font-family:var(--serif);
+  font-size:clamp(42px,5.5vw,72px);
+  font-weight:300;
+  line-height:1.12;
+  color:var(--cream);
+  margin-bottom:28px;
+  letter-spacing:-0.01em;
+}
+.cover-headline em {
+  font-style:italic;
+  color:var(--seaweed-light);
+}
+
+.cover-body {
+  font-size:16px;
+  line-height:1.75;
+  color:rgba(255,255,255,0.55);
+  max-width:540px;
+  margin-bottom:48px;
+  font-weight:300;
+}
+
+.cover-cta {
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  background:var(--seaweed);
+  color:white;
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:500;
+  letter-spacing:0.06em;
+  padding:16px 36px;
+  border-radius:4px;
+  border:none;
+  cursor:pointer;
+  transition:all 0.25s;
+  text-transform:uppercase;
+  text-decoration:none;
+}
+.cover-cta:hover{background:#3a6357;transform:translateY(-1px);box-shadow:0 8px 24px rgba(74,124,106,0.35)}
+.cover-cta svg{transition:transform 0.2s}
+.cover-cta:hover svg{transform:translateX(3px)}
+
+/* Cover metrics strip */
+.cover-metrics {
+  position:absolute;
+  bottom:0;left:0;right:0;
+  z-index:3;
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(12px);
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding:0 60px;
+}
+.cover-metrics-inner {
+  max-width:1100px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:0;
+}
+.cover-metric {
+  padding:22px 24px 22px 0;
+  border-right:1px solid rgba(255,255,255,0.07);
+}
+.cover-metric:last-child{border-right:none}
+.cover-metric-label {
+  font-size:9px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.3);
+  margin-bottom:6px;
+}
+.cover-metric-value {
+  font-family:var(--serif);
+  font-size:26px;
+  font-weight:300;
+  color:var(--cream);
+  line-height:1;
+  margin-bottom:4px;
+}
+.cover-metric-sub{font-size:11px;color:rgba(255,255,255,0.3)}
+
+/* Pillars section on cover */
+.cover-pillars {
+  position:absolute;
+  right:60px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  z-index:2;
+}
+.pillar-card {
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;
+  padding:18px 20px;
+  width:220px;
+  backdrop-filter:blur(8px);
+}
+.pillar-icon{font-size:18px;margin-bottom:8px}
+.pillar-title{font-size:12px;font-weight:500;color:rgba(255,255,255,0.7);margin-bottom:4px;letter-spacing:0.03em}
+.pillar-desc{font-size:11px;color:rgba(255,255,255,0.3);line-height:1.5}
+
+/* ─── DASHBOARD ──────────────────────────────────────────────────────── */
+#dashboard{display:none}
+
+.dash-header {
+  background:var(--navy-deep);
+  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.dash-header-inner {
+  max-width:1400px;margin:0 auto;
+  padding:0 40px;
+  display:flex;align-items:center;
+  justify-content:space-between;
+  height:58px;
+}
+.dash-logo {
+  display:flex;align-items:center;gap:14px;
+}
+.dash-logo-text {
+  font-family:var(--serif);font-size:20px;font-weight:300;
+  letter-spacing:0.2em;color:var(--cream);text-transform:uppercase;
+}
+.dash-logo-sep{width:1px;height:18px;background:rgba(255,255,255,0.15)}
+.dash-logo-sub{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.dash-header-right{display:flex;align-items:center;gap:20px}
+.dash-date{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:0.04em}
+.period-wrap{display:flex;gap:3px;background:rgba(255,255,255,0.05);border-radius:6px;padding:3px}
+.period-btn{
+  padding:4px 14px;font-size:11px;font-family:var(--sans);
+  border:none;border-radius:4px;background:transparent;
+  color:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.2s;
+  letter-spacing:0.05em;
+}
+.period-btn.active{background:var(--navy);color:white}
+.back-btn{
+  font-size:11px;color:rgba(255,255,255,0.4);background:none;border:none;
+  cursor:pointer;display:flex;align-items:center;gap:6px;transition:color 0.2s;
+  letter-spacing:0.05em;font-family:var(--sans);
+}
+.back-btn:hover{color:rgba(255,255,255,0.8)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#5BB87A;box-shadow:0 0 5px #5BB87A;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.dash-nav{background:var(--navy-dark);border-bottom:1px solid rgba(255,255,255,0.05)}
+.dash-nav-inner{max-width:1400px;margin:0 auto;padding:0 40px;display:flex}
+.dash-tab{
+  padding:13px 22px;font-size:12px;font-family:var(--sans);
+  border:none;background:transparent;color:rgba(255,255,255,0.4);
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all 0.2s;letter-spacing:0.05em;position:relative;top:1px;
+}
+.dash-tab.active{color:var(--cream);border-bottom-color:var(--seaweed-light)}
+.dash-tab:hover:not(.active){color:rgba(255,255,255,0.65)}
+
+.dash-main{max-width:1400px;margin:0 auto;padding:36px 40px 80px}
+
+/* Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:28px}
+.kpi-card{
+  background:white;border-radius:12px;padding:20px 22px;
+  border:1px solid rgba(75,95,160,0.07);
+  position:relative;overflow:hidden;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(75,95,160,0.09)}
+.kpi-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--navy);opacity:0.12;
+}
+.kpi-card.c-green::after{background:var(--seaweed);opacity:1}
+.kpi-card.c-gold::after{background:var(--gold);opacity:1}
+.kpi-card.c-warn::after{background:var(--coral);opacity:1}
+.kpi-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-weight:500}
+.kpi-val{font-family:var(--serif);font-size:30px;font-weight:300;color:var(--navy-deep);line-height:1;margin-bottom:6px}
+.kpi-sub{font-size:11px;color:var(--text-muted)}
+
+.card{background:white;border-radius:12px;padding:22px 24px;border:1px solid rgba(75,95,160,0.07);margin-bottom:0}
+.card-title{font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:3px}
+.card-sub{font-size:11px;color:var(--text-muted);margin-bottom:18px}
+.chart-grid-2{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px}
+.chart-grid-equal{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
+
+/* Hero band */
+.hero-band{
+  background:var(--navy-deep);border-radius:14px;
+  padding:28px 32px;margin-bottom:28px;
+  position:relative;overflow:hidden;
+}
+.hero-band::before{
+  content:'';position:absolute;right:-80px;top:-80px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(74,124,106,0.2) 0%,transparent 70%);
+}
+.hero-grid{display:grid;grid-template-columns:repeat(5,1fr);position:relative;z-index:1}
+.hero-m{padding-right:24px;border-right:1px solid rgba(255,255,255,0.08);margin-right:24px}
+.hero-m:last-child{border-right:none;margin-right:0;padding-right:0}
+.hero-m-label{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:7px}
+.hero-m-val{font-family:var(--serif);font-size:28px;font-weight:300;color:white;line-height:1;margin-bottom:4px}
+.hero-m-sub{font-size:11px;color:rgba(255,255,255,0.28)}
+
+/* Section head */
+.sec-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--navy);margin-bottom:5px;font-weight:500}
+.sec-title{font-family:var(--serif);font-size:26px;font-weight:300;color:var(--navy-deep);margin-bottom:3px}
+.sec-desc{font-size:12px;color:var(--text-muted);margin-bottom:24px;line-height:1.6}
+
+/* Funnel */
+.funnel-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.funnel-row:last-child{border-bottom:none}
+.funnel-lbl{font-size:12px;color:var(--text-mid);width:130px;flex-shrink:0}
+.funnel-track{flex:1;background:var(--sand);border-radius:3px;height:7px;overflow:hidden}
+.funnel-fill{height:100%;border-radius:3px;background:var(--navy);transition:width 1s ease}
+.funnel-n{font-size:12px;font-weight:500;width:64px;text-align:right;flex-shrink:0}
+.funnel-pct{font-size:11px;color:var(--text-muted);width:46px;text-align:right;flex-shrink:0}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{
+  text-align:left;padding:8px 12px;font-size:9px;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--text-muted);
+  border-bottom:1px solid var(--sand-mid);font-weight:500;
+}
+.tbl td{padding:11px 12px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--text-mid)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(75,95,160,0.02)}
+.tbl td:first-child{color:var(--text-dark);font-weight:500}
+.ch-pill{display:inline-block;padding:2px 10px;border-radius:100px;font-size:10px;font-weight:500}
+.ch-meta{color:var(--navy);background:#EEF1FA}
+.ch-google{color:#1a6432;background:#E6F4EA}
+.ch-klaviyo{color:#7B2D8B;background:#F5E8F7}
+
+/* Insight row */
+.insight-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.insight{
+  display:flex;align-items:center;gap:10px;
+  background:white;border:1px solid rgba(75,95,160,0.1);
+  border-radius:8px;padding:10px 14px;
+  font-size:12px;color:var(--text-mid);flex:1;min-width:220px;
+}
+.i-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.i-green{background:#EAF6EE}
+.i-blue{background:#EEF1FA}
+.i-gold{background:#FFF8E7}
+.i-coral{background:#FFF0ED}
+
+/* Loading */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;gap:14px}
+.spinner{width:32px;height:32px;border:2.5px solid var(--sand-mid);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-size:12px;color:var(--text-muted);letter-spacing:0.06em}
+.error-txt{font-size:13px;color:var(--coral)}
+
+/* Raw data */
+.raw-wrap{overflow-x:auto}
+.raw-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.raw-tbl th{
+  text-align:left;padding:9px 12px;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-muted);background:var(--sand);border-bottom:1px solid var(--sand-mid);font-weight:500;white-space:nowrap
+}
+.raw-tbl td{
+  padding:9px 12px;border-bottom:1px solid rgba(0,0,0,0.04);
+  color:var(--text-mid);white-space:nowrap
+}
+.raw-tbl td:first-child{color:var(--text-dark);font-weight:500}
+.raw-tbl tr:hover td{background:rgba(75,95,160,0.03)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp 0.4s ease both}
+
+@media(max-width:1000px){
+  .cover-pillars{display:none}
+  .cover-inner{padding:0 28px}
+  .cover-metrics{padding:0 28px}
+  .cover-metrics-inner{grid-template-columns:repeat(3,1fr)}
+  .hero-grid{grid-template-columns:repeat(3,1fr);gap:16px}
+  .hero-m{border-right:none;padding-right:0;margin-right:0}
+  .chart-grid-2,.chart-grid-equal,.chart-grid-3{grid-template-columns:1fr}
+  .dash-main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ COVER ═══════════════════════════════════ -->
+<div id="cover">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+
+  <div class="cover-inner">
+    <div class="cover-top">
+      <div class="cover-logo">Kiseau</div>
+      <div class="cover-badge">Business Overview · <span id="coverYear"></span></div>
+    </div>
+
+    <div class="cover-hero">
+      <div class="cover-eyebrow">Investor Briefing</div>
+      <h1 class="cover-headline">
+        The <em>future</em> of<br>what we wear on<br>our skin
+      </h1>
+      <p class="cover-body">
+        Kiseau makes organic, seaweed-infused intimate essentials —
+        small-batch, slow fashion designed for women who refuse to compromise
+        between what's good for their body and what's good for the planet.
+        Designed in North America. Made ethically in Sri Lanka.
+      </p>
+      <button class="cover-cta" onclick="enterDashboard()">
+        View Performance Dashboard
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Pillars -->
+  <div class="cover-pillars">
+    <div class="pillar-card">
+      <div class="pillar-icon">🌿</div>
+      <div class="pillar-title">Certified Organic</div>
+      <div class="pillar-desc">GOTS & OEKO-TEX® certified fabrics. Free from PFAs, azo dyes & toxins.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🌊</div>
+      <div class="pillar-title">Sea-Kissed</div>
+      <div class="pillar-desc">Icelandic seaweed-infused — antibacterial, anti-odor, nutrient-rich.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">✂️</div>
+      <div class="pillar-title">Small Batch</div>
+      <div class="pillar-desc">Slow fashion. Ethical Sri Lankan studio. Anti-fast-fashion by design.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">♻️</div>
+      <div class="pillar-title">Zero Trace</div>
+      <div class="pillar-desc">Biodegrades into water & CO₂. Plastic-free packaging. No landfill legacy.</div>
+    </div>
+  </div>
+
+  <!-- Live metrics strip -->
+  <div class="cover-metrics">
+    <div class="cover-metrics-inner" id="coverMetrics">
+      <div class="cover-metric"><div class="cover-metric-label">Loading</div><div class="cover-metric-value">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ DASHBOARD ═══════════════════════════════ -->
+<div id="dashboard">
+  <header class="dash-header">
+    <div class="dash-header-inner">
+      <div class="dash-logo">
+        <span class="dash-logo-text">Kiseau</span>
+        <span class="dash-logo-sep"></span>
+        <span class="dash-logo-sub">Performance Dashboard</span>
+      </div>
+      <div class="dash-header-right">
+        <button class="back-btn" onclick="showCover()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Overview
+        </button>
+        <span class="dash-date" id="dashDate">—</span>
+        <div class="period-wrap">
+          <button class="period-btn active" onclick="setPeriod(7,this)">7d</button>
+          <button class="period-btn" onclick="setPeriod(30,this)">30d</button>
+          <button class="period-btn" onclick="setPeriod(90,this)">90d</button>
+        </div>
+        <div class="live-dot" title="Live data"></div>
+      </div>
+    </div>
+  </header>
+  <nav class="dash-nav">
+    <div class="dash-nav-inner">
+      <button class="dash-tab active" onclick="showTab('overview',this)">Overview</button>
+      <button class="dash-tab" onclick="showTab('cmo',this)">CMO · Growth</button>
+      <button class="dash-tab" onclick="showTab('cfo',this)">CFO · Economics</button>
+      <button class="dash-tab" onclick="showTab('coo',this)">COO · Operations</button>
+      <button class="dash-tab" onclick="showTab('raw',this)">Raw Data</button>
+    </div>
+  </nav>
+  <div class="dash-main" id="dashMain">
+    <div class="loading-wrap"><div class="spinner"></div><span class="loading-txt">Loading live data…</span></div>
+  </div>
+</div>
+
+<script>
+// ── Config ─────────────────────────────────────────────────────────────
+const SID = '1oagjPJFDrV1XO2BSVfAR-Fb3CnrJDh2HNfLSgUAUFWA';
+let DATA = {};
+let DAYS = 7;
+let CHARTS = {};
+
+document.getElementById('coverYear').textContent = new Date().getFullYear();
+
+// ── Navigation ─────────────────────────────────────────────────────────
+function enterDashboard() {
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  if (!Object.keys(DATA).length) loadAll();
+}
+function showCover() {
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('cover').style.display = 'block';
+}
+
+// ── Fetch ───────────────────────────────────────────────────────────────
+async function fetchTab(tab) {
+  const url = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tab)}`;
+  const r = await fetch(url);
+  const t = await r.text();
+  const j = JSON.parse(t.substring(47).slice(0,-2));
+  const cols = j.table.cols.map(c=>c.label);
+  return j.table.rows.map(row => {
+    const o = {};
+    row.c.forEach((cell,i) => { o[cols[i]] = cell ? cell.v : null; });
+    return o;
+  });
+}
+
+async function loadAll() {
+  try {
+    const [b,s,m,g,k,ga] = await Promise.all([
+      fetchTab('blended'), fetchTab('shopify'), fetchTab('meta'),
+      fetchTab('google_ads'), fetchTab('klaviyo'), fetchTab('ga4')
+    ]);
+    DATA = {b,s,m,g,k,ga};
+    const last = b[b.length-1];
+    if (last?.date) {
+      document.getElementById('dashDate').textContent = 'as of ' + last.date;
+    }
+    buildCoverMetrics();
+    renderDash();
+  } catch(e) {
+    document.getElementById('dashMain').innerHTML =
+      `<div class="loading-wrap"><p class="error-txt">Failed to load: ${e.message}</p><p style="font-size:11px;color:var(--text-muted);margin-top:8px">Ensure the Spreadsheet is shared as "Anyone with the link – Viewer"</p></div>`;
+  }
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────
+const n = v => parseFloat(v)||0;
+const $f = (v,d=0) => '$'+n(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const xf = v => n(v).toFixed(2)+'×';
+const pf = v => (n(v)*100).toFixed(1)+'%';
+const nf = v => Math.round(n(v)).toLocaleString();
+
+function period(rows) {
+  if (!rows?.length) return [];
+  const cut = new Date(); cut.setDate(cut.getDate()-DAYS);
+  return rows.filter(r => { if(!r.date) return false; return new Date(r.date)>=cut; });
+}
+function sum(rows,f){ return rows.reduce((a,r)=>a+n(r[f]),0); }
+function avg(rows,f){ return rows.length?sum(rows,f)/rows.length:0; }
+function last(rows,f){ return rows.length?n(rows[rows.length-1][f]):0; }
+
+// ── Cover metrics ────────────────────────────────────────────────────────
+function buildCoverMetrics() {
+  const b7 = period(DATA.b);
+  const s7 = period(DATA.s);
+  const rev = sum(b7,'net_revenue')||sum(s7,'net_revenue');
+  const spend = sum(b7,'total_ad_spend');
+  const mer = spend>0?rev/spend:0;
+  const cust = sum(b7,'new_customers')||sum(s7,'new_customers');
+  const cac = cust>0?spend/cust:0;
+  const aov = last(s7,'aov')||( sum(s7,'orders')>0 ? sum(s7,'gross_revenue')/sum(s7,'orders'):0 );
+  const emailShare = rev>0?(sum(b7,'email_revenue')||0)/rev:0;
+
+  const metrics = [
+    {label:'Net Revenue (7d)',val:$f(rev),sub:`${nf(sum(s7,'orders'))} orders`},
+    {label:'MER',val:xf(mer),sub:'marketing efficiency'},
+    {label:'Blended CAC',val:$f(cac),sub:`${nf(cust)} new customers`},
+    {label:'AOV',val:$f(aov,2),sub:'avg order value'},
+    {label:'Email Rev Share',val:pf(emailShare),sub:'owned channel'},
+  ];
+  document.getElementById('coverMetrics').innerHTML = metrics.map(m=>`
+    <div class="cover-metric">
+      <div class="cover-metric-label">${m.label}</div>
+      <div class="cover-metric-value">${m.val}</div>
+      <div class="cover-metric-sub">${m.sub}</div>
+    </div>`).join('');
+}
+
+// ── Dashboard rendering ──────────────────────────────────────────────────
+function showTab(name,btn){
+  document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDash(name);
+}
+function setPeriod(d,btn){
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  DAYS=d;
+  if(Object.keys(DATA).length) {
+    buildCoverMetrics();
+    const active = document.querySelector('.dash-tab.active');
+    const t = active?.getAttribute('onclick')?.match(/'(\w+)'/)?.[1]||'overview';
+    renderDash(t);
+  }
+}
+function renderDash(tab) {
+  tab = tab||document.querySelector('.dash-tab.active')?.getAttribute('onclick')?.match(/'(\w+)'/)?.[1]||'overview';
+  Object.values(CHARTS).forEach(c=>{try{c.destroy()}catch(e){}});
+  CHARTS={};
+  const el = document.getElementById('dashMain');
+  if(tab==='overview')    el.innerHTML = buildOverview();
+  else if(tab==='cmo')    el.innerHTML = buildCMO();
+  else if(tab==='cfo')    el.innerHTML = buildCFO();
+  else if(tab==='coo')    el.innerHTML = buildCOO();
+  else if(tab==='raw')    el.innerHTML = buildRaw();
+  requestAnimationFrame(()=>drawCharts(tab));
+}
+
+// ── OVERVIEW ─────────────────────────────────────────────────────────────
+function buildOverview() {
+  const b=period(DATA.b), s=period(DATA.s), ga=period(DATA.ga), m=period(DATA.m), g=period(DATA.g);
+  const rev=sum(b,'net_revenue')||sum(s,'net_revenue');
+  const spend=sum(b,'total_ad_spend');
+  const mer=spend>0?rev/spend:0;
+  const cust=sum(b,'new_customers')||sum(s,'new_customers');
+  const cac=cust>0?spend/cust:0;
+  const sess=sum(ga,'sessions')||sum(b,'sessions');
+  const cvr=avg(ga,'cvr')||avg(b,'cvr');
+  const emailRev=sum(b,'email_revenue');
+  const emailShare=rev>0?emailRev/rev:0;
+  const orders=sum(s,'orders');
+  const aov=orders>0?(sum(s,'gross_revenue')||sum(b,'gross_revenue'))/orders:last(s,'aov');
+  const metaRoas=avg(m,'roas'); const googleRoas=avg(g,'roas');
+  const metaSpend=sum(b,'meta_spend'); const googleSpend=sum(b,'google_spend');
+  const metaRev=sum(m,'revenue'); const googleRev=sum(g,'revenue');
+
+  const tail = b.slice(-14);
+  const dates=tail.map(r=>r.date||'');
+  const revS=tail.map(r=>n(r.net_revenue));
+  const spS=tail.map(r=>n(r.total_ad_spend));
+  const merS=tail.map(r=>n(r.mer));
+
+  return `<div class="fade-up">
+  <div class="hero-band">
+    <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:16px">
+      Business snapshot · last ${DAYS} days
+    </div>
+    <div class="hero-grid">
+      <div class="hero-m"><div class="hero-m-label">Net Revenue</div><div class="hero-m-val">${$f(rev)}</div><div class="hero-m-sub">${nf(orders)} orders</div></div>
+      <div class="hero-m"><div class="hero-m-label">MER</div><div class="hero-m-val">${xf(mer)}</div><div class="hero-m-sub">true efficiency</div></div>
+      <div class="hero-m"><div class="hero-m-label">Blended CAC</div><div class="hero-m-val">${$f(cac)}</div><div class="hero-m-sub">${nf(cust)} new customers</div></div>
+      <div class="hero-m"><div class="hero-m-label">Site CVR</div><div class="hero-m-val">${pf(cvr)}</div><div class="hero-m-sub">${nf(sess)} sessions</div></div>
+      <div class="hero-m"><div class="hero-m-label">Email Share</div><div class="hero-m-val">${pf(emailShare)}</div><div class="hero-m-sub">${$f(emailRev)} owned</div></div>
+    </div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card c-green"><div class="kpi-label">Total Ad Spend</div><div class="kpi-val">${$f(spend)}</div><div class="kpi-sub">Meta ${$f(metaSpend)} · Google ${$f(googleSpend)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Meta ROAS</div><div class="kpi-val">${xf(metaRoas)}</div><div class="kpi-sub">period average</div></div>
+    <div class="kpi-card"><div class="kpi-label">Google ROAS</div><div class="kpi-val">${xf(googleRoas)}</div><div class="kpi-sub">period average</div></div>
+    <div class="kpi-card c-gold"><div class="kpi-label">AOV</div><div class="kpi-val">${$f(aov,2)}</div><div class="kpi-sub">avg order value</div></div>
+    <div class="kpi-card"><div class="kpi-label">Sessions</div><div class="kpi-val">${nf(sess)}</div><div class="kpi-sub">site visits</div></div>
+  </div>
+  <div class="chart-grid-2">
+    <div class="card">
+      <div class="card-title">Revenue vs Ad Spend</div>
+      <div class="card-sub">Daily net revenue and total paid media spend</div>
+      <div style="position:relative;height:200px"><canvas id="c_revsp" role="img" aria-label="Revenue vs spend trend"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">MER Trend</div>
+      <div class="card-sub">Marketing efficiency ratio · daily</div>
+      <div style="position:relative;height:200px"><canvas id="c_mer" role="img" aria-label="MER trend"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-grid-equal">
+    <div class="card">
+      <div class="card-title">Spend Allocation</div>
+      <div class="card-sub">Paid channel split</div>
+      <div style="position:relative;height:180px"><canvas id="c_spend_mix" role="img" aria-label="Spend mix donut"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Revenue Attribution</div>
+      <div class="card-sub">Channel revenue split</div>
+      <div style="position:relative;height:180px"><canvas id="c_rev_mix" role="img" aria-label="Revenue mix donut"></canvas></div>
+    </div>
+  </div>
+  <script>window._ov={dates,revS,spS,merS,metaSpend,googleSpend,metaRev,googleRev,emailRev}<\/script>
+  </div>`;
+}
+
+// ── CMO ───────────────────────────────────────────────────────────────────
+function buildCMO() {
+  const b=period(DATA.b), ga=period(DATA.ga), k=period(DATA.k), m=period(DATA.m), g=period(DATA.g);
+  const rev=sum(b,'net_revenue'); const spend=sum(b,'total_ad_spend');
+  const mer=spend>0?rev/spend:0;
+  const emailRev=sum(k,'email_revenue')||sum(b,'email_revenue');
+  const flowRev=sum(k,'flow_revenue'); const abCart=sum(k,'abandoned_cart_revenue');
+  const newProf=sum(k,'new_profiles');
+  const metaRoas=avg(m,'roas'); const googleRoas=avg(g,'roas');
+  const metaFreq=avg(m,'frequency'); const metaCtr=avg(m,'ctr');
+  const brandImpr=sum(g,'brand_impressions');
+  const sess=sum(ga,'sessions')||sum(b,'sessions');
+  const newU=sum(ga,'new_users');
+  const cust=sum(b,'new_customers');
+  const spendPct=rev>0?spend/rev:0;
+
+  const tail=b.slice(-14);
+  const dates=tail.map(r=>r.date||'');
+  const emailS=tail.map(r=>n(r.email_revenue));
+  const newCS=tail.map(r=>n(r.new_customers));
+
+  const fd={
+    abCart:sum(k,'abandoned_cart_revenue'),
+    welcome:sum(k,'welcome_revenue'),
+    postP:sum(k,'post_purchase_revenue'),
+    other:Math.max(0,flowRev-sum(k,'abandoned_cart_revenue')-sum(k,'welcome_revenue')-sum(k,'post_purchase_revenue'))
+  };
+
+  return `<div class="fade-up">
+  <div style="margin-bottom:24px">
+    <div class="sec-label">CMO Dashboard</div>
+    <div class="sec-title">Growth & Acquisition</div>
+    <div class="sec-desc">Channel efficiency, owned channel health, traffic quality, and creative signals</div>
+  </div>
+  <div class="insight-row">
+    <div class="insight"><div class="i-icon i-green">🌿</div><span>MER <strong>${xf(mer)}</strong> — every $1 ad spend returns ${xf(mer)} net revenue</span></div>
+    <div class="insight"><div class="i-icon i-blue">✉️</div><span>Klaviyo flows generated <strong>${$f(flowRev)}</strong> this period automatically</span></div>
+    <div class="insight"><div class="i-icon i-gold">🔍</div><span><strong>${nf(brandImpr)}</strong> branded search impressions — growing organic demand</span></div>
+    ${metaFreq>3?`<div class="insight"><div class="i-icon i-coral">⚠️</div><span>Meta frequency <strong>${n(metaFreq).toFixed(1)}×</strong> — consider refreshing creatives</span></div>`:''}
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card c-green"><div class="kpi-label">MER</div><div class="kpi-val">${xf(mer)}</div><div class="kpi-sub">blended efficiency</div></div>
+    <div class="kpi-card"><div class="kpi-label">Meta ROAS</div><div class="kpi-val">${xf(metaRoas)}</div><div class="kpi-sub">attributed</div></div>
+    <div class="kpi-card"><div class="kpi-label">Google ROAS</div><div class="kpi-val">${xf(googleRoas)}</div><div class="kpi-sub">attributed</div></div>
+    <div class="kpi-card c-gold"><div class="kpi-label">Email Revenue</div><div class="kpi-val">${$f(emailRev)}</div><div class="kpi-sub">${$f(abCart)} cart recovery</div></div>
+    <div class="kpi-card"><div class="kpi-label">New Subscribers</div><div class="kpi-val">${nf(newProf)}</div><div class="kpi-sub">list growth</div></div>
+    <div class="kpi-card"><div class="kpi-label">Meta CTR</div><div class="kpi-val">${(n(metaCtr)*100).toFixed(2)}%</div><div class="kpi-sub">creative performance</div></div>
+    <div class="kpi-card ${metaFreq>3?'c-warn':''}"><div class="kpi-label">Meta Frequency</div><div class="kpi-val">${n(metaFreq).toFixed(1)}</div><div class="kpi-sub">${metaFreq>3?'⚠ fatigue risk':'healthy'}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Sessions</div><div class="kpi-val">${nf(sess)}</div><div class="kpi-sub">${nf(newU)} new visitors</div></div>
+  </div>
+  <div class="chart-grid-equal">
+    <div class="card">
+      <div class="card-title">Email Revenue & New Customers</div>
+      <div class="card-sub">Owned channel revenue vs daily acquisition</div>
+      <div style="position:relative;height:200px"><canvas id="c_email" role="img" aria-label="Email revenue trend"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Flow Revenue Breakdown</div>
+      <div class="card-sub">Automated Klaviyo flow performance</div>
+      <div style="position:relative;height:200px"><canvas id="c_flows" role="img" aria-label="Flow revenue donut"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Channel Performance</div>
+    <div class="card-sub">Spend, revenue and efficiency · last ${DAYS} days</div>
+    <table class="tbl">
+      <thead><tr><th>Channel</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Conversions</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ch-pill ch-meta">Meta Ads</span></td><td>${$f(sum(m,'spend'),2)}</td><td>${$f(sum(m,'revenue'),2)}</td><td>${xf(metaRoas)}</td><td>${nf(sum(m,'conversions'))}</td></tr>
+        <tr><td><span class="ch-pill ch-google">Google Ads</span></td><td>${$f(sum(g,'spend'),2)}</td><td>${$f(sum(g,'revenue'),2)}</td><td>${xf(googleRoas)}</td><td>${nf(sum(g,'conversions'))}</td></tr>
+        <tr><td><span class="ch-pill ch-klaviyo">Klaviyo</span></td><td>—</td><td>${$f(emailRev,2)}</td><td>—</td><td>${nf(sum(k,'email_conversions'))}</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <script>window._cmo={dates,emailS,newCS,fd}<\/script>
+  </div>`;
+}
+
+// ── CFO ───────────────────────────────────────────────────────────────────
+function buildCFO() {
+  const b=period(DATA.b), s=period(DATA.s);
+  const grossRev=sum(s,'gross_revenue');
+  const netRev=sum(b,'net_revenue')||sum(s,'net_revenue');
+  const spend=sum(b,'total_ad_spend');
+  const mer=spend>0?netRev/spend:0;
+  const cust=sum(b,'new_customers')||sum(s,'new_customers');
+  const cac=cust>0?spend/cust:0;
+  const discounts=sum(s,'total_discounts');
+  const refunds=sum(s,'total_refunds');
+  const discRate=grossRev>0?discounts/grossRev:0;
+  const refRate=grossRev>0?refunds/grossRev:0;
+  const spendPct=grossRev>0?spend/grossRev:0;
+  const orders=sum(s,'orders');
+  const aov=orders>0?grossRev/orders:0;
+  const payback=last(b,'cac_payback_months');
+  const repeatRate=avg(b,'repeat_purchase_rate');
+
+  const tail=b.slice(-14);
+  const dates=tail.map(r=>r.date||'');
+  const merS=tail.map(r=>n(r.mer));
+  const cacS=tail.map(r=>n(r.blended_cac));
+  const newRS=period(DATA.s).slice(-14).map(r=>n(r.new_customer_revenue));
+  const retRS=period(DATA.s).slice(-14).map(r=>n(r.returning_customer_revenue));
+
+  return `<div class="fade-up">
+  <div style="margin-bottom:24px">
+    <div class="sec-label">CFO Dashboard</div>
+    <div class="sec-title">Unit Economics & P&L</div>
+    <div class="sec-desc">Revenue quality, marketing efficiency, and customer acquisition economics</div>
+  </div>
+  <div class="insight-row">
+    <div class="insight"><div class="i-icon i-blue">📊</div><span>Ad spend is <strong>${pf(spendPct)}</strong> of gross revenue — benchmark is 15–30%</span></div>
+    <div class="insight"><div class="i-icon i-green">🔄</div><span>Repeat purchase rate <strong>${pf(repeatRate)}</strong> — retention health signal</span></div>
+    <div class="insight"><div class="i-icon ${refRate>0.05?'i-coral':'i-green'}">↩️</div><span>Refund rate <strong>${pf(refRate)}</strong> — ${refRate>0.05?'above 5% threshold':'healthy range'}</span></div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card c-green"><div class="kpi-label">Net Revenue</div><div class="kpi-val">${$f(netRev)}</div><div class="kpi-sub">after discounts & refunds</div></div>
+    <div class="kpi-card"><div class="kpi-label">Gross Revenue</div><div class="kpi-val">${$f(grossRev)}</div><div class="kpi-sub">${nf(orders)} orders</div></div>
+    <div class="kpi-card"><div class="kpi-label">MER</div><div class="kpi-val">${xf(mer)}</div><div class="kpi-sub">true north star</div></div>
+    <div class="kpi-card c-gold"><div class="kpi-label">Blended CAC</div><div class="kpi-val">${$f(cac)}</div><div class="kpi-sub">${nf(cust)} new customers</div></div>
+    <div class="kpi-card ${payback>6?'c-warn':''}"><div class="kpi-label">CAC Payback</div><div class="kpi-val">${payback?n(payback).toFixed(1)+'mo':'—'}</div><div class="kpi-sub">at 54% gross margin</div></div>
+    <div class="kpi-card"><div class="kpi-label">AOV</div><div class="kpi-val">${$f(aov,2)}</div><div class="kpi-sub">avg order value</div></div>
+    <div class="kpi-card ${discRate>0.15?'c-warn':''}"><div class="kpi-label">Discount Rate</div><div class="kpi-val">${pf(discRate)}</div><div class="kpi-sub">${$f(discounts)} total</div></div>
+    <div class="kpi-card"><div class="kpi-label">Refund Rate</div><div class="kpi-val">${pf(refRate)}</div><div class="kpi-sub">${$f(refunds)} total</div></div>
+  </div>
+  <div class="chart-grid-equal">
+    <div class="card">
+      <div class="card-title">MER & CAC Trend</div>
+      <div class="card-sub">Efficiency vs acquisition cost · daily</div>
+      <div style="position:relative;height:200px"><canvas id="c_mercac" role="img" aria-label="MER and CAC trend"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Revenue Waterfall</div>
+      <div class="card-sub">Gross → Net after discounts & refunds</div>
+      <div style="position:relative;height:200px"><canvas id="c_waterfall" role="img" aria-label="Revenue waterfall"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">New vs Returning Customer Revenue</div>
+    <div class="card-sub">Acquisition vs retention revenue balance</div>
+    <div style="position:relative;height:180px"><canvas id="c_custsplit" role="img" aria-label="New vs returning revenue stacked"></canvas></div>
+  </div>
+  <script>window._cfo={dates,merS,cacS,newRS,retRS,grossRev,discounts,refunds,netRev}<\/script>
+  </div>`;
+}
+
+// ── COO ───────────────────────────────────────────────────────────────────
+function buildCOO() {
+  const s=period(DATA.s), ga=period(DATA.ga), b=period(DATA.b);
+  const orders=sum(s,'orders');
+  const fulfilled=sum(s,'fulfilled_orders');
+  const fulfillRate=orders>0?fulfilled/orders:0;
+  const sess=sum(ga,'sessions')||sum(b,'sessions');
+  const atc=sum(ga,'add_to_cart')||sum(b,'add_to_cart');
+  const bkchk=sum(ga,'begin_checkout')||sum(b,'begin_checkout');
+  const purch=sum(ga,'transactions')||orders;
+  const cvr=avg(ga,'cvr')||avg(b,'cvr');
+  const abandoned=sum(ga,'abandoned_carts')||sum(b,'abandoned_carts');
+  const repeatRate=avg(b,'repeat_purchase_rate');
+  const bounce=avg(ga,'bounce_rate');
+  const tailS=s.slice(-14);
+  const dates=tailS.map(r=>r.date||'');
+  const ordS=tailS.map(r=>n(r.orders));
+
+  return `<div class="fade-up">
+  <div style="margin-bottom:24px">
+    <div class="sec-label">COO Dashboard</div>
+    <div class="sec-title">Operations & Conversion</div>
+    <div class="sec-desc">Order fulfillment, purchase funnel, retention, and site performance</div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card c-green"><div class="kpi-label">Orders</div><div class="kpi-val">${nf(orders)}</div><div class="kpi-sub">${nf(fulfilled)} fulfilled</div></div>
+    <div class="kpi-card ${fulfillRate<0.9?'c-warn':''}"><div class="kpi-label">Fulfillment Rate</div><div class="kpi-val">${pf(fulfillRate)}</div><div class="kpi-sub">${fulfillRate>=0.95?'excellent':fulfillRate>=0.9?'good':'⚠ review needed'}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Site CVR</div><div class="kpi-val">${pf(cvr)}</div><div class="kpi-sub">visit → purchase</div></div>
+    <div class="kpi-card"><div class="kpi-label">Repeat Purchase</div><div class="kpi-val">${pf(repeatRate)}</div><div class="kpi-sub">returning buyers</div></div>
+    <div class="kpi-card"><div class="kpi-label">Sessions</div><div class="kpi-val">${nf(sess)}</div><div class="kpi-sub">${pf(1-n(bounce))} engaged</div></div>
+    <div class="kpi-card ${abandoned>orders*2?'c-warn':''}"><div class="kpi-label">Abandoned Carts</div><div class="kpi-val">${nf(abandoned)}</div><div class="kpi-sub">Klaviyo recoverable</div></div>
+  </div>
+  <div class="chart-grid-equal">
+    <div class="card">
+      <div class="card-title">Daily Order Volume</div>
+      <div class="card-sub">Order count trend</div>
+      <div style="position:relative;height:200px"><canvas id="c_orders" role="img" aria-label="Daily orders"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Purchase Funnel</div>
+      <div class="card-sub">Session to purchase conversion steps</div>
+      <div style="padding-top:6px">${funnelHTML(sess,atc,bkchk,purch)}</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">GA4 Channel Breakdown</div>
+    <div class="card-sub">Sessions, transactions and CVR by acquisition channel</div>
+    ${gaChannelTable(ga)}
+  </div>
+  <script>window._coo={dates,ordS}<\/script>
+  </div>`;
+}
+
+function funnelHTML(sess,atc,bk,pur) {
+  return [[sess,'Sessions',1],[atc,'Add to Cart',sess>0?atc/sess:0],[bk,'Checkout',sess>0?bk/sess:0],[pur,'Purchase',sess>0?pur/sess:0]]
+    .map(([v,l,p])=>`
+    <div class="funnel-row">
+      <div class="funnel-lbl">${l}</div>
+      <div class="funnel-track"><div class="funnel-fill" style="width:${(n(p)*100).toFixed(1)}%"></div></div>
+      <div class="funnel-n">${nf(v)}</div>
+      <div class="funnel-pct">${pf(p)}</div>
+    </div>`).join('');
+}
+
+function gaChannelTable(rows) {
+  const cm={};
+  rows.forEach(r=>{
+    let cd=[]; try{cd=JSON.parse(r.channel_data||'[]')}catch(e){}
+    cd.forEach(ch=>{
+      if(!cm[ch.channel])cm[ch.channel]={s:0,t:0,r:0};
+      cm[ch.channel].s+=n(ch.sessions);
+      cm[ch.channel].t+=n(ch.transactions);
+      cm[ch.channel].r+=n(ch.revenue);
+    });
+  });
+  const sorted=Object.entries(cm).sort((a,b)=>b[1].r-a[1].r);
+  if(!sorted.length) return '<p style="color:var(--text-muted);font-size:12px;padding:16px 0">No channel data for this period</p>';
+  return `<table class="tbl"><thead><tr><th>Channel</th><th>Sessions</th><th>Transactions</th><th>Revenue</th><th>CVR</th></tr></thead><tbody>
+  ${sorted.map(([ch,d])=>`<tr><td>${ch}</td><td>${nf(d.s)}</td><td>${nf(d.t)}</td><td>${$f(d.r,2)}</td><td>${pf(d.s>0?d.t/d.s:0)}</td></tr>`).join('')}
+  </tbody></table>`;
+}
+
+// ── RAW ────────────────────────────────────────────────────────────────────
+function buildRaw() {
+  const rows=[...period(DATA.b)].reverse();
+  if(!rows.length) return `<div class="loading-wrap"><p style="color:var(--text-muted);font-size:13px">No data for this period</p></div>`;
+  return `<div class="fade-up">
+  <div style="margin-bottom:20px">
+    <div class="sec-label">Raw Data</div>
+    <div class="sec-title">Blended Daily Metrics</div>
+    <div class="sec-desc">Last ${DAYS} days · most recent first</div>
+  </div>
+  <div class="card raw-wrap">
+    <table class="raw-tbl">
+      <thead><tr><th>Date</th><th>Net Rev</th><th>Gross Rev</th><th>Ad Spend</th><th>MER</th><th>New Cust</th><th>CAC</th><th>Meta ROAS</th><th>Google ROAS</th><th>Email Rev</th><th>Sessions</th><th>CVR</th><th>Email Share</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr>
+        <td>${r.date||''}</td><td>${$f(r.net_revenue,2)}</td><td>${$f(r.gross_revenue,2)}</td>
+        <td>${$f(r.total_ad_spend,2)}</td><td>${xf(r.mer)}</td><td>${nf(r.new_customers)}</td>
+        <td>${$f(r.blended_cac,2)}</td><td>${xf(r.meta_roas)}</td><td>${xf(r.google_roas)}</td>
+        <td>${$f(r.email_revenue,2)}</td><td>${nf(r.sessions)}</td><td>${pf(r.cvr)}</td>
+        <td>${pf(r.email_revenue_share)}</td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div></div>`;
+}
+
+// ── Charts ──────────────────────────────────────────────────────────────────
+const NAVY='#4B5FA0', SEAWEED='#4A7C6A', CORAL='#C4705A', GOLD='#B8965A';
+const GC='rgba(0,0,0,0.05)';
+const baseOpts=(yCb)=>({
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  scales:{
+    x:{grid:{color:GC},ticks:{font:{size:10,family:'DM Sans'},color:'#8A90A8',maxRotation:45,autoSkip:true,maxTicksLimit:8}},
+    y:{grid:{color:GC},ticks:{font:{size:10,family:'DM Sans'},color:'#8A90A8',callback:yCb||undefined}}
+  }
+});
+
+function drawCharts(tab) {
+  const ge = id => document.getElementById(id);
+
+  if(tab==='overview' && window._ov) {
+    const {dates,revS,spS,merS,metaSpend,googleSpend,metaRev,googleRev,emailRev} = window._ov;
+    if(dates.length && ge('c_revsp')) {
+      CHARTS.revsp = new Chart(ge('c_revsp'),{type:'bar',data:{labels:dates,datasets:[
+        {label:'Net Rev',data:revS,backgroundColor:'rgba(75,95,160,0.13)',borderColor:NAVY,borderWidth:1.5,borderRadius:3},
+        {label:'Spend',data:spS,backgroundColor:'rgba(196,112,90,0.13)',borderColor:CORAL,borderWidth:1.5,borderRadius:3}
+      ]},options:baseOpts(v=>'$'+Math.round(v))});
+      CHARTS.mer = new Chart(ge('c_mer'),{type:'line',data:{labels:dates,datasets:[{data:merS,borderColor:SEAWEED,backgroundColor:'rgba(74,124,106,0.08)',borderWidth:2,tension:0.35,fill:true,pointRadius:2}]},options:baseOpts(v=>v.toFixed(1)+'×')});
+    }
+    if(ge('c_spend_mix')) CHARTS.spMix = new Chart(ge('c_spend_mix'),{type:'doughnut',data:{labels:['Meta','Google'],datasets:[{data:[metaSpend,googleSpend],backgroundColor:['rgba(75,95,160,0.82)','rgba(74,124,106,0.82)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:'#5A6070',padding:14}}}}});
+    if(ge('c_rev_mix')) CHARTS.revMix = new Chart(ge('c_rev_mix'),{type:'doughnut',data:{labels:['Meta','Google','Email'],datasets:[{data:[metaRev,googleRev,emailRev],backgroundColor:['rgba(75,95,160,0.82)','rgba(74,124,106,0.82)','rgba(184,150,90,0.82)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:'#5A6070',padding:14}}}}});
+  }
+
+  if(tab==='cmo' && window._cmo) {
+    const {dates,emailS,newCS,fd} = window._cmo;
+    if(dates.length && ge('c_email')) {
+      CHARTS.email = new Chart(ge('c_email'),{type:'line',data:{labels:dates,datasets:[
+        {label:'Email Rev',data:emailS,borderColor:GOLD,backgroundColor:'rgba(184,150,90,0.08)',borderWidth:2,tension:0.35,fill:true,yAxisID:'y'},
+        {label:'New Cust',data:newCS,borderColor:NAVY,borderWidth:2,tension:0.35,pointRadius:3,yAxisID:'y1'}
+      ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:10},padding:12}}},scales:{x:{grid:{color:GC},ticks:{font:{size:10},color:'#8A90A8',maxTicksLimit:8}},y:{grid:{color:GC},ticks:{font:{size:10},color:'#8A90A8',callback:v=>'$'+v},position:'left'},y1:{grid:{display:false},ticks:{font:{size:10},color:'#8A90A8'},position:'right'}}}});
+    }
+    if(ge('c_flows')) CHARTS.flows = new Chart(ge('c_flows'),{type:'doughnut',data:{labels:['Abandoned Cart','Welcome','Post-Purchase','Other'],datasets:[{data:[fd.abCart,fd.welcome,fd.postP,fd.other],backgroundColor:['rgba(75,95,160,0.85)','rgba(74,124,106,0.85)','rgba(184,150,90,0.85)','rgba(196,112,90,0.7)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:'#5A6070',padding:12}}}}});
+  }
+
+  if(tab==='cfo' && window._cfo) {
+    const {dates,merS,cacS,newRS,retRS,grossRev,discounts,refunds,netRev}=window._cfo;
+    if(dates.length && ge('c_mercac')) {
+      CHARTS.mercac = new Chart(ge('c_mercac'),{type:'line',data:{labels:dates,datasets:[
+        {label:'MER',data:merS,borderColor:SEAWEED,borderWidth:2,tension:0.35,yAxisID:'y'},
+        {label:'CAC',data:cacS,borderColor:CORAL,borderWidth:2,tension:0.35,yAxisID:'y1'}
+      ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:10},padding:12}}},scales:{x:{grid:{color:GC},ticks:{font:{size:10},color:'#8A90A8',maxTicksLimit:8}},y:{position:'left',grid:{color:GC},ticks:{font:{size:10},color:'#8A90A8',callback:v=>v.toFixed(1)+'×'}},y1:{position:'right',grid:{display:false},ticks:{font:{size:10},color:'#8A90A8',callback:v=>'$'+v}}}}});
+    }
+    if(ge('c_waterfall')) CHARTS.waterfall = new Chart(ge('c_waterfall'),{type:'bar',data:{labels:['Gross','Discounts','Refunds','Net'],datasets:[{data:[grossRev,-discounts,-refunds,netRev],backgroundColor:['rgba(75,95,160,0.7)','rgba(196,112,90,0.65)','rgba(196,112,90,0.45)','rgba(74,124,106,0.8)'],borderRadius:4,borderWidth:0}]},options:baseOpts(v=>'$'+Math.abs(Math.round(v)))});
+    if(ge('c_custsplit')&&newRS.length) CHARTS.cust = new Chart(ge('c_custsplit'),{type:'bar',data:{labels:dates,datasets:[
+      {label:'New',data:newRS,backgroundColor:'rgba(75,95,160,0.65)',borderRadius:2,borderWidth:0},
+      {label:'Returning',data:retRS,backgroundColor:'rgba(74,124,106,0.65)',borderRadius:2,borderWidth:0}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:10},padding:12}}},scales:{x:{stacked:true,grid:{color:GC},ticks:{font:{size:10},color:'#8A90A8',maxTicksLimit:8}},y:{stacked:true,grid:{color:GC},ticks:{font:{size:10},color:'#8A90A8',callback:v=>'$'+v}}}}});
+  }
+
+  if(tab==='coo' && window._coo) {
+    const {dates,ordS}=window._coo;
+    if(dates.length && ge('c_orders')) {
+      CHARTS.orders = new Chart(ge('c_orders'),{type:'bar',data:{labels:dates,datasets:[{data:ordS,backgroundColor:'rgba(75,95,160,0.13)',borderColor:NAVY,borderWidth:1.5,borderRadius:3}]},options:baseOpts()});
+    }
+  }
+}
+
+// ── Boot ────────────────────────────────────────────────────────────────────
+// Pre-load data in background while cover is showing
+loadAll();
+</script>
+</body>
+</html>
