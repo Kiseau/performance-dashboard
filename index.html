@@ -4,6 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kiseau — Business Overview</title>
+<script>
+// ── Password gate ──────────────────────────────────────────────────────────
+// Change ACCESS_CODE to whatever password you want to share with partners.
+// The page content is hidden until the correct code is entered.
+// Session is held in memory only — re-entering is required on fresh tab open.
+(function() {
+  const ACCESS_CODE = 'kiseau2026';
+  if (sessionStorage.getItem('kau_auth') === '1') return; // already verified
+  document.addEventListener('DOMContentLoaded', function() {
+    const gate = document.getElementById('auth-gate');
+    if (gate) gate.style.display = 'flex';
+    const app = document.getElementById('app-root');
+    if (app) app.style.display = 'none';
+  });
+  window._checkAccess = function() {
+    const input = document.getElementById('auth-input');
+    const err   = document.getElementById('auth-error');
+    if (input.value.trim().toLowerCase() === ACCESS_CODE.toLowerCase()) {
+      sessionStorage.setItem('kau_auth', '1');
+      document.getElementById('auth-gate').style.display = 'none';
+      document.getElementById('app-root').style.display  = 'block';
+    } else {
+      err.style.opacity = '1';
+      input.value = '';
+      input.focus();
+      setTimeout(() => { err.style.opacity = '0'; }, 2200);
+    }
+  };
+  window._gateKeydown = function(e) {
+    if (e.key === 'Enter') window._checkAccess();
+  };
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -412,6 +445,26 @@ body{font-family:var(--sans);background:var(--cream);color:var(--text-dark);over
 </head>
 <body>
 
+<!-- ═══════════════════════════ AUTH GATE ═══════════════════════════════ -->
+<div id="auth-gate" style="display:none;position:fixed;inset:0;z-index:9999;background:#1C2444;flex-direction:column;align-items:center;justify-content:center;">
+  <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(74,124,106,0.15) 0%,transparent 70%);top:-100px;right:-100px;pointer-events:none"></div>
+  <div style="position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(75,95,160,0.2) 0%,transparent 70%);bottom:-80px;left:-80px;pointer-events:none"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;max-width:400px;padding:0 32px">
+    <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:32px;font-weight:300;letter-spacing:0.22em;color:#F7F3EC;text-transform:uppercase;margin-bottom:10px">Kiseau</div>
+    <div style="font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:48px">Business Overview</div>
+    <input id="auth-input" type="password" placeholder="Access code" onkeydown="_gateKeydown(event)" autocomplete="off"
+      style="width:100%;padding:16px 20px;margin-bottom:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:15px;color:#F7F3EC;outline:none;letter-spacing:0.08em;transition:border-color 0.2s;"
+      onfocus="this.style.borderColor='rgba(127,179,160,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+    <button onclick="_checkAccess()"
+      style="width:100%;padding:15px;background:#4A7C6A;color:white;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;"
+      onmouseover="this.style.background='#3a6357'" onmouseout="this.style.background='#4A7C6A'">Enter</button>
+    <div id="auth-error" style="margin-top:14px;font-size:12px;color:#C4705A;letter-spacing:0.06em;opacity:0;transition:opacity 0.3s;">Incorrect access code — please try again</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ APP ROOT ════════════════════════════════ -->
+<div id="app-root">
+
 <!-- ═══════════════════════════ COVER ═══════════════════════════════════ -->
 <div id="cover">
   <div class="bg-orb bg-orb-1"></div>
@@ -430,7 +483,7 @@ body{font-family:var(--sans);background:var(--cream);color:var(--text-dark);over
         The <em>future</em> of<br>what we wear on<br>our skin
       </h1>
       <p class="cover-body">
-        Kiseau makes organic, seaweed-infused intimate essentials —
+        Kiseau makes certified organic, seaweed-infused intimate essentials —
         small-batch, slow fashion designed for women who refuse to compromise
         between what's good for their body and what's good for the planet.
         Designed in North America. Made ethically in Sri Lanka.
@@ -1032,5 +1085,6 @@ function drawCharts(tab) {
 // Pre-load data in background while cover is showing
 loadAll();
 </script>
+</div><!-- /app-root -->
 </body>
 </html>
