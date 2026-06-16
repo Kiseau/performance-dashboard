@@ -598,7 +598,16 @@ async function fetchTab(tab) {
   const cols = j.table.cols.map(c=>c.label);
   return j.table.rows.map(row => {
     const o = {};
-    row.c.forEach((cell,i) => { o[cols[i]] = cell ? cell.v : null; });
+    row.c.forEach((cell,i) => {
+      let v = cell ? cell.v : null;
+      // gviz returns date-typed cells as the string "Date(yyyy,m,d)" (month 0-indexed),
+      // which new Date() cannot parse. Normalize to an ISO "YYYY-MM-DD" string.
+      if (typeof v === 'string' && v.slice(0,5) === 'Date(') {
+        const dp = v.match(/\d+/g).map(Number);
+        v = dp[0] + '-' + String(dp[1]+1).padStart(2,'0') + '-' + String(dp[2]||1).padStart(2,'0');
+      }
+      o[cols[i]] = v;
+    });
     return o;
   });
 }
