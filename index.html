@@ -728,6 +728,7 @@ function buildOverview() {
   const spS=tail.map(r=>n(r.total_ad_spend));
   const merS=tail.map(r=>n(r.mer));
 
+  window._ov={dates,revS,spS,merS,metaSpend,googleSpend,metaRev,googleRev,emailRev};
   return `<div class="fade-up">
   <div class="hero-band">
     <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:16px">
@@ -772,7 +773,6 @@ function buildOverview() {
       <div style="position:relative;height:180px"><canvas id="c_rev_mix" role="img" aria-label="Revenue mix donut"></canvas></div>
     </div>
   </div>
-  <script>window._ov={dates,revS,spS,merS,metaSpend,googleSpend,metaRev,googleRev,emailRev}<\/script>
   </div>`;
 }
 
@@ -804,6 +804,7 @@ function buildCMO() {
     other:Math.max(0,flowRev-sum(k,'abandoned_cart_revenue')-sum(k,'welcome_revenue')-sum(k,'post_purchase_revenue'))
   };
 
+  window._cmo={dates,emailS,newCS,fd};
   return `<div class="fade-up">
   <div style="margin-bottom:24px">
     <div class="sec-label">CMO Dashboard</div>
@@ -850,7 +851,6 @@ function buildCMO() {
       </tbody>
     </table>
   </div>
-  <script>window._cmo={dates,emailS,newCS,fd}<\/script>
   </div>`;
 }
 
@@ -880,6 +880,7 @@ function buildCFO() {
   const newRS=period(DATA.s).slice(-14).map(r=>n(r.new_customer_revenue));
   const retRS=period(DATA.s).slice(-14).map(r=>n(r.returning_customer_revenue));
 
+  window._cfo={dates,merS,cacS,newRS,retRS,grossRev,discounts,refunds,netRev};
   return `<div class="fade-up">
   <div style="margin-bottom:24px">
     <div class="sec-label">CFO Dashboard</div>
@@ -918,7 +919,6 @@ function buildCFO() {
     <div class="card-sub">Acquisition vs retention revenue balance</div>
     <div style="position:relative;height:180px"><canvas id="c_custsplit" role="img" aria-label="New vs returning revenue stacked"></canvas></div>
   </div>
-  <script>window._cfo={dates,merS,cacS,newRS,retRS,grossRev,discounts,refunds,netRev}<\/script>
   </div>`;
 }
 
@@ -940,6 +940,7 @@ function buildCOO() {
   const dates=tailS.map(r=>r.date||'');
   const ordS=tailS.map(r=>n(r.orders));
 
+  window._coo={dates,ordS};
   return `<div class="fade-up">
   <div style="margin-bottom:24px">
     <div class="sec-label">COO Dashboard</div>
@@ -971,7 +972,6 @@ function buildCOO() {
     <div class="card-sub">Sessions, transactions and CVR by acquisition channel</div>
     ${gaChannelTable(ga)}
   </div>
-  <script>window._coo={dates,ordS}<\/script>
   </div>`;
 }
 
