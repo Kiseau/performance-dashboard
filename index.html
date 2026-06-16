@@ -596,7 +596,7 @@ async function fetchTab(tab) {
   const t = await r.text();
   const j = JSON.parse(t.substring(47).slice(0,-2));
   const cols = j.table.cols.map(c=>c.label);
-  return j.table.rows.map(row => {
+  const _rows = j.table.rows.map(row => {
     const o = {};
     row.c.forEach((cell,i) => {
       let v = cell ? cell.v : null;
@@ -610,15 +610,17 @@ async function fetchTab(tab) {
     });
     return o;
   });
+  return dedupeRows(_rows);
 }
 
 async function loadAll() {
   try {
-    const [b,s,m,g,k,ga] = await Promise.all([
+    const [b,s,m,g,k,ga,raw] = await Promise.all([
       fetchTab('blended'), fetchTab('shopify'), fetchTab('meta'),
-      fetchTab('google_ads'), fetchTab('klaviyo'), fetchTab('ga4')
+      fetchTab('google_ads'), fetchTab('klaviyo'), fetchTab('ga4'), fetchTab('raw_data')
     ]);
-    DATA = {b,s,m,g,k,ga};
+    DATA = {b,s,m,g,k,ga,raw};
+    DATA.attr = buildAttribution(raw);
     const last = b[b.length-1];
     if (last?.date) {
       document.getElementById('dashDate').textContent = 'as of ' + last.date;
@@ -647,6 +649,32 @@ function sum(rows,f){ return rows.reduce((a,r)=>a+n(r[f]),0); }
 function avg(rows,f){ return rows.length?sum(rows,f)/rows.length:0; }
 function last(rows,f){ return rows.length?n(rows[rows.length-1][f]):0; }
 
+// ── Dedupe + cross-platform attribution (Shopify = source of truth) ──────────
+function dedupeRows(rows){
+  const seen=new Set(), out=[];
+  for(const r of rows){ const k=JSON.stringify(r); if(!seen.has(k)){ seen.add(k); out.push(r); } }
+  return out;
+}
+// Credit each day's ACTUAL Shopify orders to ONE channel by priority:
+// Meta (paid) -> Google -> Klaviyo -> Direct/Organic. Revenue uses Shopify's
+// real value (AOV), so a sale is never attributed to more than one platform.
+function buildAttribution(rawRows){
+  const byDate={};
+  for(const r of (rawRows||[])){ if(!r.date) continue; (byDate[r.date]=byDate[r.date]||{})[r.channel]=r; }
+  const PRI=[['Meta Ads','meta'],['Google Ads','google'],['Klaviyo','klaviyo']];
+  const out=[];
+  Object.keys(byDate).sort().forEach(d=>{
+    const ch=byDate[d], shop=ch['Shopify']||{};
+    const O=n(shop.orders), R=n(shop.revenue), aov=O>0?R/O:0;
+    let rem=O; const cr={meta:0,google:0,klaviyo:0};
+    PRI.forEach(([name,key])=>{ const claim=ch[name]?n(ch[name].orders):0; const take=Math.max(0,Math.min(claim,rem)); cr[key]=take; rem-=take; });
+    out.push({date:d, orders:O, revenue:R,
+      metaRev:cr.meta*aov, googleRev:cr.google*aov, klaviyoRev:cr.klaviyo*aov, directRev:rem*aov,
+      metaOrders:cr.meta, googleOrders:cr.google, klaviyoOrders:cr.klaviyo, directOrders:rem});
+  });
+  return out;
+}
+
 // ── Cover metrics ────────────────────────────────────────────────────────
 function buildCoverMetrics() {
   const b7 = period(DATA.b);
@@ -657,7 +685,7 @@ function buildCoverMetrics() {
   const cust = sum(b7,'new_customers')||sum(s7,'new_customers');
   const cac = cust>0?spend/cust:0;
   const aov = last(s7,'aov')||( sum(s7,'orders')>0 ? sum(s7,'gross_revenue')/sum(s7,'orders'):0 );
-  const emailShare = rev>0?(sum(b7,'email_revenue')||0)/rev:0;
+  const emailShare = rev>0?(sum(period(DATA.attr||[]),'klaviyoRev')||0)/rev:0;
 
   const metrics = [
     {label:'Net Revenue (7d)',val:$f(rev),sub:`${nf(sum(s7,'orders'))} orders`},
@@ -707,6 +735,7 @@ function renderDash(tab) {
 // ── OVERVIEW ─────────────────────────────────────────────────────────────
 function buildOverview() {
   const b=period(DATA.b), s=period(DATA.s), ga=period(DATA.ga), m=period(DATA.m), g=period(DATA.g);
+  const at=period(DATA.attr||[]);
   const rev=sum(b,'net_revenue')||sum(s,'net_revenue');
   const spend=sum(b,'total_ad_spend');
   const mer=spend>0?rev/spend:0;
@@ -714,13 +743,13 @@ function buildOverview() {
   const cac=cust>0?spend/cust:0;
   const sess=sum(ga,'sessions')||sum(b,'sessions');
   const cvr=avg(ga,'cvr')||avg(b,'cvr');
-  const emailRev=sum(b,'email_revenue');
+  const emailRev=sum(at,'klaviyoRev');
   const emailShare=rev>0?emailRev/rev:0;
   const orders=sum(s,'orders');
   const aov=orders>0?(sum(s,'gross_revenue')||sum(b,'gross_revenue'))/orders:last(s,'aov');
-  const metaRoas=avg(m,'roas'); const googleRoas=avg(g,'roas');
   const metaSpend=sum(b,'meta_spend'); const googleSpend=sum(b,'google_spend');
-  const metaRev=sum(m,'revenue'); const googleRev=sum(g,'revenue');
+  const metaRev=sum(at,'metaRev'); const googleRev=sum(at,'googleRev'); const directRev=sum(at,'directRev');
+  const metaRoas=metaSpend>0?metaRev/metaSpend:0; const googleRoas=googleSpend>0?googleRev/googleSpend:0;
 
   const tail = b.slice(-14);
   const dates=tail.map(r=>r.date||'');
@@ -728,7 +757,7 @@ function buildOverview() {
   const spS=tail.map(r=>n(r.total_ad_spend));
   const merS=tail.map(r=>n(r.mer));
 
-  window._ov={dates,revS,spS,merS,metaSpend,googleSpend,metaRev,googleRev,emailRev};
+  window._ov={dates,revS,spS,merS,metaSpend,googleSpend,metaRev,googleRev,emailRev,directRev};
   return `<div class="fade-up">
   <div class="hero-band">
     <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:16px">
@@ -779,12 +808,15 @@ function buildOverview() {
 // ── CMO ───────────────────────────────────────────────────────────────────
 function buildCMO() {
   const b=period(DATA.b), ga=period(DATA.ga), k=period(DATA.k), m=period(DATA.m), g=period(DATA.g);
+  const at=period(DATA.attr||[]);
   const rev=sum(b,'net_revenue'); const spend=sum(b,'total_ad_spend');
   const mer=spend>0?rev/spend:0;
-  const emailRev=sum(k,'email_revenue')||sum(b,'email_revenue');
+  const emailRev=sum(at,'klaviyoRev');
   const flowRev=sum(k,'flow_revenue'); const abCart=sum(k,'abandoned_cart_revenue');
   const newProf=sum(k,'new_profiles');
-  const metaRoas=avg(m,'roas'); const googleRoas=avg(g,'roas');
+  const metaSpend=sum(b,'meta_spend'); const googleSpend=sum(b,'google_spend');
+  const metaRev=sum(at,'metaRev'); const googleRev=sum(at,'googleRev');
+  const metaRoas=metaSpend>0?metaRev/metaSpend:0; const googleRoas=googleSpend>0?googleRev/googleSpend:0;
   const metaFreq=avg(m,'frequency'); const metaCtr=avg(m,'ctr');
   const brandImpr=sum(g,'brand_impressions');
   const sess=sum(ga,'sessions')||sum(b,'sessions');
@@ -794,7 +826,7 @@ function buildCMO() {
 
   const tail=b.slice(-14);
   const dates=tail.map(r=>r.date||'');
-  const emailS=tail.map(r=>n(r.email_revenue));
+  const _am=Object.fromEntries((DATA.attr||[]).map(a=>[a.date,a])); const emailS=tail.map(r=>_am[r.date]?n(_am[r.date].klaviyoRev):0);
   const newCS=tail.map(r=>n(r.new_customers));
 
   const fd={
@@ -845,8 +877,8 @@ function buildCMO() {
     <table class="tbl">
       <thead><tr><th>Channel</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Conversions</th></tr></thead>
       <tbody>
-        <tr><td><span class="ch-pill ch-meta">Meta Ads</span></td><td>${$f(sum(m,'spend'),2)}</td><td>${$f(sum(m,'revenue'),2)}</td><td>${xf(metaRoas)}</td><td>${nf(sum(m,'conversions'))}</td></tr>
-        <tr><td><span class="ch-pill ch-google">Google Ads</span></td><td>${$f(sum(g,'spend'),2)}</td><td>${$f(sum(g,'revenue'),2)}</td><td>${xf(googleRoas)}</td><td>${nf(sum(g,'conversions'))}</td></tr>
+        <tr><td><span class="ch-pill ch-meta">Meta Ads</span></td><td>${$f(sum(m,'spend'),2)}</td><td>${$f(metaRev,2)}</td><td>${xf(metaRoas)}</td><td>${nf(sum(m,'conversions'))}</td></tr>
+        <tr><td><span class="ch-pill ch-google">Google Ads</span></td><td>${$f(sum(g,'spend'),2)}</td><td>${$f(googleRev,2)}</td><td>${xf(googleRoas)}</td><td>${nf(sum(g,'conversions'))}</td></tr>
         <tr><td><span class="ch-pill ch-klaviyo">Klaviyo</span></td><td>—</td><td>${$f(emailRev,2)}</td><td>—</td><td>${nf(sum(k,'email_conversions'))}</td></tr>
       </tbody>
     </table>
@@ -1044,7 +1076,7 @@ function drawCharts(tab) {
   const ge = id => document.getElementById(id);
 
   if(tab==='overview' && window._ov) {
-    const {dates,revS,spS,merS,metaSpend,googleSpend,metaRev,googleRev,emailRev} = window._ov;
+    const {dates,revS,spS,merS,metaSpend,googleSpend,metaRev,googleRev,emailRev,directRev} = window._ov;
     if(dates.length && ge('c_revsp')) {
       CHARTS.revsp = new Chart(ge('c_revsp'),{type:'bar',data:{labels:dates,datasets:[
         {label:'Net Rev',data:revS,backgroundColor:'rgba(75,95,160,0.13)',borderColor:NAVY,borderWidth:1.5,borderRadius:3},
@@ -1053,7 +1085,7 @@ function drawCharts(tab) {
       CHARTS.mer = new Chart(ge('c_mer'),{type:'line',data:{labels:dates,datasets:[{data:merS,borderColor:SEAWEED,backgroundColor:'rgba(74,124,106,0.08)',borderWidth:2,tension:0.35,fill:true,pointRadius:2}]},options:baseOpts(v=>v.toFixed(1)+'×')});
     }
     if(ge('c_spend_mix')) CHARTS.spMix = new Chart(ge('c_spend_mix'),{type:'doughnut',data:{labels:['Meta','Google'],datasets:[{data:[metaSpend,googleSpend],backgroundColor:['rgba(75,95,160,0.82)','rgba(74,124,106,0.82)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:'#5A6070',padding:14}}}}});
-    if(ge('c_rev_mix')) CHARTS.revMix = new Chart(ge('c_rev_mix'),{type:'doughnut',data:{labels:['Meta','Google','Email'],datasets:[{data:[metaRev,googleRev,emailRev],backgroundColor:['rgba(75,95,160,0.82)','rgba(74,124,106,0.82)','rgba(184,150,90,0.82)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:'#5A6070',padding:14}}}}});
+    if(ge('c_rev_mix')) CHARTS.revMix = new Chart(ge('c_rev_mix'),{type:'doughnut',data:{labels:['Meta','Google','Email','Direct'],datasets:[{data:[metaRev,googleRev,emailRev,directRev],backgroundColor:['rgba(75,95,160,0.82)','rgba(74,124,106,0.82)','rgba(184,150,90,0.82)','rgba(138,144,168,0.6)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:'#5A6070',padding:14}}}}});
   }
 
   if(tab==='cmo' && window._cmo) {
